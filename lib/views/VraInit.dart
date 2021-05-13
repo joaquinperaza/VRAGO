@@ -1,7 +1,10 @@
 
+import 'package:dart_jts/dart_jts.dart' as jts;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:vrago/api/ShapeLoader.dart';
+import 'package:vrago/api/converter.dart';
+import 'package:vrago/views/Map.dart';
 
 
 class VraInit extends StatefulWidget {
@@ -13,10 +16,15 @@ class VraInit extends StatefulWidget {
 
 class VraInitState extends State<VraInit> {
   int var_sel=-1;
+  Widget next_btn;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    next_btn=ElevatedButton( style: ElevatedButton.styleFrom(shape: new RoundedRectangleBorder(
+      borderRadius: new BorderRadius.circular(30.0),
+    )),
+        child: Center(child: Row(children: [Text('Next'),Icon(Icons.arrow_forward)],mainAxisSize: MainAxisSize.max,mainAxisAlignment: MainAxisAlignment.center,),));
   }
 
   @override
@@ -36,6 +44,30 @@ class VraInitState extends State<VraInit> {
             print(value);
             setState(() {
               var_sel = value;
+              next_btn=ElevatedButton(onPressed: (){
+                  print(widget.shpLoader.variables[var_sel]);
+                  List<double> rates=[];
+                  Map<double,Color> mapColor={};
+                  widget.shpLoader.data.forEach((jts.Polygon key, List<double>value) {
+                    if(!rates.contains(value[widget.shpLoader.variables[var_sel][0]])){
+                      rates.add(value[widget.shpLoader.variables[var_sel][0]]);
+                    }
+                  });
+                  print(rates);
+                  rates.sort();
+                  print(rates);
+                  List<Color> colores=Utils().getColors(rates.length);
+                  for(int i=0;i<rates.length;i++){
+                    mapColor[rates[i]]=colores[i];
+                  }
+               Navigator.push(
+                    context,
+                   MaterialPageRoute(builder: (context) => MapSample(widget.shpLoader,var_sel,mapColor)));
+
+              }, style: ElevatedButton.styleFrom(shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(30.0),
+              )),
+                  child: Center(child: Row(children: [Text('Next'),Icon(Icons.arrow_forward)],mainAxisSize: MainAxisSize.max,mainAxisAlignment: MainAxisAlignment.center,),));
             });
           },
         ),
@@ -50,8 +82,8 @@ class VraInitState extends State<VraInit> {
           children: varOptions,
         ),
       Center(child:Text("Currently one layer supported!")),
-      Center(child:Text("Future work will enable more than one product"))
-
+      Center(child:Text("Future work will enable more than one product")),
+      next_btn
 
     ],));
     return Scaffold(

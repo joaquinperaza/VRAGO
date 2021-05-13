@@ -7,7 +7,10 @@ import 'package:dart_shp/dart_shp.dart';
 
 class ShapeLoader{
   Map<Polygon,List<double>> data={};
+
   List<List<dynamic>> variables=[];
+
+
 
 Future<void> loadFile(String shp_p,String shx_p,String dbf_p) async{
 
@@ -59,7 +62,13 @@ Future<void> loadFile(String shp_p,String shx_p,String dbf_p) async{
     }
     data.clear();
     read();
+}
 
-
+double getRate(Point location, int variable){
+  data.forEach((Polygon key, List<double> value) {
+    if(key.covers(location)){
+      return value[variables[variable][0]];
+    }
+  });
 }
 }

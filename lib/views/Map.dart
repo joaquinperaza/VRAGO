@@ -1,13 +1,19 @@
 import 'dart:async';
 
 
+import 'package:dart_jts/dart_jts.dart' as jts;
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:vrago/api/ShapeLoader.dart';
+import 'package:vrago/api/converter.dart';
+import 'package:vrago/widgets/Legend.dart';
 
 class MapSample extends StatefulWidget {
   ShapeLoader polygonosSHP;
-  MapSample(this.polygonosSHP);
+  int var_sel;
+  Map<double,Color> colores={};
+  MapSample(this.polygonosSHP,this.var_sel,this.colores);
   @override
   State<MapSample> createState() => MapSampleState();
 }
@@ -15,26 +21,38 @@ class MapSample extends StatefulWidget {
 class MapSampleState extends State<MapSample> {
   Set<Polygon> polygons=new Set();
   List<LatLng> puntos=[];
-  List<Color> colores=[Colors.red,Colors.yellow,Colors.green];
+  Widget legend=Text("");
+  bool showLegend=false;
   int num=0;
   Completer<GoogleMapController> _controller = Completer();
 
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
+  static final CameraPosition VB = CameraPosition(
+    target: LatLng(-32.515991143477265,-57.61803204378471 ),
     zoom: 12,
   );
 
-  static final CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    int i=0;
+    print(widget.colores);
+    widget.polygonosSHP.data.forEach((jts.Polygon key, List<double> value) {
+      i++;
+      List<LatLng> gcoords=[];
+      key.getCoordinates().forEach((jts.Coordinate jcord) {
+        gcoords.add(Utils().jtsToGLatLng(jcord));
+      });
+
+      polygons.add(new Polygon(polygonId: PolygonId(i.toString()),points: gcoords,strokeWidth: 1,fillColor: widget.colores[value[widget.polygonosSHP.variables[widget.var_sel][0]]]));
+    });
+  }
+  @override
   Widget build(BuildContext context) {
-    return new GoogleMap(
+    Widget map= new GoogleMap(
         mapType: MapType.hybrid,
-        initialCameraPosition: _kGooglePlex,
+        initialCameraPosition: VB,
         zoomControlsEnabled: true,
         polygons: polygons,
         onLongPress: (L){
@@ -51,12 +69,97 @@ class MapSampleState extends State<MapSample> {
 
         },
       );
+    return Scaffold(
+      floatingActionButton: SpeedDial(
+        /// both default to 16
+        marginEnd: 18,
+        marginBottom: 20,
+        // animatedIcon: AnimatedIcons.menu_close,
+        // animatedIconTheme: IconThemeData(size: 22.0),
+        /// This is ignored if animatedIcon is non null
+        icon: Icons.extension,
+        activeIcon: Icons.close,
+        // iconTheme: IconThemeData(color: Colors.grey[50], size: 30),
+        /// The label of the main button.
+        // label: Text("Open Speed Dial"),
+        /// The active label of the main button, Defaults to label if not specified.
+        // activeLabel: Text("Close Speed Dial"),
+        /// Transition Builder between label and activeLabel, defaults to FadeTransition.
+        // labelTransitionBuilder: (widget, animation) => ScaleTransition(scale: animation,child: widget),
+        /// The below button size defaults to 56 itself, its the FAB size + It also affects relative padding and other elements
+        buttonSize: 56.0,
+        visible: true,
+        /// If true user is forced to close dial manually
+        /// by tapping main button and overlay is not rendered.
+        closeManually: false,
+        /// If true overlay will render no matter what.
+        renderOverlay: false,
+        curve: Curves.bounceIn,
+        overlayColor: Colors.white,
+        overlayOpacity: 0.5,
+        onOpen: () => print('OPENING DIAL'),
+        onClose: () => print('DIAL CLOSED'),
+        tooltip: 'More',
+        heroTag: 'speed-dial-hero-tag',
+        backgroundColor: Colors.red.shade900,
+        foregroundColor: Colors.white,
+        elevation: 8.0,
+        shape: CircleBorder(),
+        // orientation: SpeedDialOrientation.Up,
+        // childMarginBottom: 2,
+        // childMarginTop: 2,
+        children: [
+          SpeedDialChild(
+            child: Icon(Icons.map_sharp),
+            backgroundColor: Colors.blue.shade900,
+            label: 'Toggle Legend',
+            labelStyle: TextStyle(fontSize: 18.0),
+            onTap: () {
+              if(!showLegend){
+                setState(() {
+                  showLegend=true;
+                  legend=MapLegend(widget.colores);
+                });
+                print("legend");
+              } else{
+                showLegend=false;
+                print("no legend");
+                setState(() {
+                  legend=Container();
+                });
+              }
+            },
+            onLongPress: () => print('FIRST CHILD LONG PRESS'),
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.assistant_photo_sharp),
+            backgroundColor: Colors.orangeAccent,
+            label: 'Show Target Rate',
+            labelStyle: TextStyle(fontSize: 18.0),
+            onTap: () => print('THIRD CHILD'),
+            onLongPress: () => print('THIRD CHILD LONG PRESS'),
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.location_searching),
+            backgroundColor: Colors.green.shade600,
+            label: 'Go to Machine',
+            labelStyle: TextStyle(fontSize: 18.0),
+            onTap: () => print('SECOND CHILD'),
+            onLongPress: () => print('SECOND CHILD LONG PRESS'),
+          ),
+
+        ],
+      ),
+      appBar: AppBar(
+        // Here we take the value from the MyHomePage object that was created by
+        // the App.build method, and use it to set our appbar title.
+        title: Text(widget.polygonosSHP.variables[widget.var_sel][1]),
+      ),body: Stack(children: [map,Container(alignment: Alignment.bottomLeft,width: 100,child: legend,margin: EdgeInsets.all(15),)],));
   }
 
-  Future<void> _goToTheLake() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
-  }
+
+
+
 
 
 }

@@ -33,6 +33,8 @@ dependencies:
   dart_jts: ^0.0.7+2
   file_picker: ^3.0.1
   dart_hydrologis_utils: ^0.5.5
+  palette_generator: ^0.3.0
+  flutter_speed_dial: ^3.0.5
 
 
 dev_dependencies:
