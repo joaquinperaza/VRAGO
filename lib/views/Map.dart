@@ -23,7 +23,12 @@ class MapSampleState extends State<MapSample> {
   List<LatLng> puntos=[];
   Widget legend=Text("");
   bool showLegend=false;
+
+  Widget mainRate=Text("");
+  double currentMainRate=0.0;
+  bool showRate=false;
   int num=0;
+
   Completer<GoogleMapController> _controller = Completer();
 
   static final CameraPosition VB = CameraPosition(
@@ -136,13 +141,38 @@ class MapSampleState extends State<MapSample> {
             backgroundColor: Colors.orangeAccent,
             label: 'Show Target Rate',
             labelStyle: TextStyle(fontSize: 18.0),
-            onTap: () => print('THIRD CHILD'),
+            onTap: () {
+              if(!showRate){
+                setState(() {
+                  showRate=true;
+                  mainRate=Container(alignment: Alignment.topCenter,width:200,height:100,decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(20))
+                  ),child: Column(children: [Center(child:Text("Current main rate:",style: TextStyle(fontSize: 15))),Center(child:Text(currentMainRate.toStringAsFixed(2),style: TextStyle(fontSize: 50)))],),padding: EdgeInsets.all(10),);
+                });
+                print("show rate");
+              } else{
+                showRate=false;
+                print("no rate");
+                setState(() {
+                  mainRate=Container();
+                });
+              }
+            },
             onLongPress: () => print('THIRD CHILD LONG PRESS'),
           ),
           SpeedDialChild(
             child: Icon(Icons.location_searching),
             backgroundColor: Colors.green.shade600,
             label: 'Go to Machine',
+            labelStyle: TextStyle(fontSize: 18.0),
+            onTap: () => print('SECOND CHILD'),
+            onLongPress: () => print('SECOND CHILD LONG PRESS'),
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.fence),
+            backgroundColor: Colors.green.shade600,
+            label: 'Go to Field',
             labelStyle: TextStyle(fontSize: 18.0),
             onTap: () => print('SECOND CHILD'),
             onLongPress: () => print('SECOND CHILD LONG PRESS'),
@@ -154,7 +184,11 @@ class MapSampleState extends State<MapSample> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.polygonosSHP.variables[widget.var_sel][1]),
-      ),body: Stack(children: [map,Container(alignment: Alignment.bottomLeft,width: 100,child: legend,margin: EdgeInsets.all(15),)],));
+      ),body: Stack(children: [map,
+      Container(alignment: Alignment.topCenter,child: mainRate ,margin: EdgeInsets.all(15),),
+      Container(alignment: Alignment.bottomLeft,width: 100,child: legend,margin: EdgeInsets.all(15),),
+
+    ],));
   }
 
 

@@ -35,6 +35,8 @@ dependencies:
   dart_hydrologis_utils: ^0.5.5
   palette_generator: ^0.3.0
   flutter_speed_dial: ^3.0.5
+  shared_preferences: ^2.0.5
+  location: ^4.1.1
 
 
 dev_dependencies:

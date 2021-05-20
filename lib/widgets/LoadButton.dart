@@ -42,7 +42,7 @@ class LoadButtonState extends State<LoadButton> {
       }, style: ElevatedButton.styleFrom(shape: new RoundedRectangleBorder(
         borderRadius: new BorderRadius.circular(30.0),
       )),
-          child: Row(children: [Text('Next'),Icon(Icons.arrow_forward)],mainAxisSize: MainAxisSize.min,));
+          child: Row(children: [Text('Next '),Icon(Icons.arrow_forward)],));
     });
     await widget.shpLoader.loadFile(result1.files.single.path, result2.files.single.path, result3.files.single.path);
   }
@@ -82,11 +82,11 @@ class LoadButtonState extends State<LoadButton> {
           style: ElevatedButton.styleFrom(shape: new RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(30.0),
           ),),
-          child: Text('Load SHP'));
+          child: Row(children: [Icon(Icons.upload_file),Text(' Load SHP')]));
     } else{res1= ElevatedButton(style: ElevatedButton.styleFrom(shape: new RoundedRectangleBorder(
       borderRadius: new BorderRadius.circular(30.0),
     ),primary: Colors.grey),
-        child: Text('SHP Loaded'));
+        child: Row(children: [Icon(Icons.check),Text(' SHP Loaded')]));
     }
 
     if(r2){
@@ -99,11 +99,11 @@ class LoadButtonState extends State<LoadButton> {
           style: ElevatedButton.styleFrom(shape: new RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(30.0),
           ),),
-          child: Text('Load SHX'));
+          child: Row(children: [Icon(Icons.upload_file),Text(' Load SHX')]));
     } else{res2= ElevatedButton(style: ElevatedButton.styleFrom(shape: new RoundedRectangleBorder(
       borderRadius: new BorderRadius.circular(30.0),
     ),primary: Colors.grey),
-        child: Text('SHX Loaded'));
+        child: Row(children: [Icon(Icons.check),Text(' SHX Loaded')]));
     }
 
 
@@ -117,11 +117,11 @@ class LoadButtonState extends State<LoadButton> {
           style: ElevatedButton.styleFrom(shape: new RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(30.0),
           ),),
-          child: Text('Load DBF'));
+          child: Row(children: [Icon(Icons.upload_file),Text(' Load DBF')]));
     } else{res3= ElevatedButton(style: ElevatedButton.styleFrom(shape: new RoundedRectangleBorder(
       borderRadius: new BorderRadius.circular(30.0),
     ),primary: Colors.grey),
-        child: Text('DBF Loaded'));
+        child: Row(children: [Icon(Icons.check),Text(' DBF Loaded')]));
     }
     if(r1==r2 &&r2==r3 && r3==false){
 
@@ -130,10 +130,16 @@ class LoadButtonState extends State<LoadButton> {
       res3=Container();
 
       proceed_btn=ElevatedButton(onPressed: () async {
-        try {await load();}
+        try {
+          await load();
+          setState(() {
+            proceed_btn=Container();
+          });
+        }
         catch(E){
           print("#@#"+E.toString());
           setState(() {
+
             err_btn=ElevatedButton(onPressed: (){
 
               setState(() {
@@ -146,13 +152,13 @@ class LoadButtonState extends State<LoadButton> {
             }, style: ElevatedButton.styleFrom(primary:Colors.red,shape: new RoundedRectangleBorder(
               borderRadius: new BorderRadius.circular(30.0),
             )),
-                child: Row(children: [Text('Invalid Files'),Icon(Icons.error)],mainAxisSize: MainAxisSize.min,));
+                child: Row(children: [Icon(Icons.error),Text(' Invalid Files')]));
           });
         }
       }, style: ElevatedButton.styleFrom(shape: new RoundedRectangleBorder(
         borderRadius: new BorderRadius.circular(30.0),
       )),
-          child: Row(children: [Text('Load Files'),Icon(Icons.arrow_forward)],mainAxisSize: MainAxisSize.min,));
+          child: Row(children: [Icon(Icons.archive_sharp),Text(' Load Files')],));
 
 
     }

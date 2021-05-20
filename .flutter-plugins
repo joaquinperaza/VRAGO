@@ -2,3 +2,12 @@
 file_picker=/Users/joaquin/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/file_picker-3.0.1/
 flutter_plugin_android_lifecycle=/Users/joaquin/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-2.0.1/
 google_maps_flutter=/Users/joaquin/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/google_maps_flutter-2.0.3/
+location=/Users/joaquin/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/location-4.1.1/
+location_web=/Users/joaquin/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/location_web-3.0.0/
+path_provider_linux=/Users/joaquin/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-2.0.0/
+path_provider_windows=/Users/joaquin/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_windows-2.0.1/
+shared_preferences=/Users/joaquin/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences-2.0.5/
+shared_preferences_linux=/Users/joaquin/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_linux-2.0.0/
+shared_preferences_macos=/Users/joaquin/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_macos-2.0.0/
+shared_preferences_web=/Users/joaquin/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_web-2.0.0/
+shared_preferences_windows=/Users/joaquin/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_windows-2.0.0/

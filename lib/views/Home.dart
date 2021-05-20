@@ -2,6 +2,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:vrago/api/ShapeLoader.dart';
+import 'package:vrago/models/Settings.dart';
+import 'package:vrago/views/Settings.dart';
 import 'package:vrago/widgets/LoadButton.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -25,7 +27,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   ShapeLoader shpLoader = new ShapeLoader();
+  VragoSettings settings = new VragoSettings();
+  @override
+  void initState() {
 
+    settings.load();
+  }
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -51,10 +58,13 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
+      body: Container(padding: EdgeInsets.all(25),child: Center(
+
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
+
+
           // Column is also a layout widget. It takes a list of children and
           // arranges them vertically. By default, it sizes itself to fit its
           // children horizontally, and tries to be as tall as its parent.
@@ -72,20 +82,17 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             LoadButton(shpLoader),
-            ElevatedButton(onPressed: () {},
+            ElevatedButton(onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => SettingPage(settings)));},
                 style: ElevatedButton.styleFrom(shape: new RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(30.0),
                 ),),
-                child: Text('UDP Settings')),
+                child: Row(children: [Icon(Icons.settings),Text(' Settings')],)),
+
 
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+       // This trailing comma makes auto-formatting nicer for build methods.
+    ));
   }
 }
