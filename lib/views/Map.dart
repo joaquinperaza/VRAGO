@@ -5,15 +5,18 @@ import 'package:dart_jts/dart_jts.dart' as jts;
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:vrago/api/LocationProvider.dart';
 import 'package:vrago/api/ShapeLoader.dart';
 import 'package:vrago/api/converter.dart';
+import 'package:vrago/models/Settings.dart';
 import 'package:vrago/widgets/Legend.dart';
 
 class MapSample extends StatefulWidget {
   ShapeLoader polygonosSHP;
+  VragoSettings settings;
   int var_sel;
   Map<double,Color> colores={};
-  MapSample(this.polygonosSHP,this.var_sel,this.colores);
+  MapSample(this.polygonosSHP,this.var_sel,this.colores,this.settings);
   @override
   State<MapSample> createState() => MapSampleState();
 }

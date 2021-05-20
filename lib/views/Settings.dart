@@ -78,20 +78,32 @@ class SettingPageState extends State<SettingPage> {
         ),
       ),
       Padding(padding: EdgeInsets.all(30)),
-      Text("UDP Output IP"),
+      Text("UDP Input Port"),
       TextFormField(
-        initialValue: widget.settings.DestiantionIp,
+        initialValue: widget.settings.InputPort,
         onChanged: (String val){
-          widget.settings.DestiantionIp=val;
+          widget.settings.InputPort=val;
           widget.settings.save();
         },
         decoration: InputDecoration(
-        border: OutlineInputBorder(),
-          hintText: '192.168.x.x'
-    ),
-    )
+            border: OutlineInputBorder(),
+            hintText: '1024 - 65535'
+        ),
+      ),Padding(padding: EdgeInsets.all(30)),
+      Text("UDP Output Port"),
+      TextFormField(
+        initialValue: widget.settings.DestiantionPort,
+        onChanged: (String val){
+          widget.settings.DestiantionPort=val;
+          widget.settings.save();
+        },
+        decoration: InputDecoration(
+            border: OutlineInputBorder(),
+            hintText: '1024 - 65535'
+        ),
+      )
     ],),),);
-    return Scaffold(body:res,appBar: AppBar(
+    return Scaffold(body:ListView(children: [res],),appBar: AppBar(
 
       // Here we take the value from the MyHomePage object that was created by
       // the App.build method, and use it to set our appbar title.

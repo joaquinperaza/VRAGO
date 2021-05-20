@@ -4,12 +4,14 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:vrago/api/ShapeLoader.dart';
 import 'package:vrago/api/converter.dart';
+import 'package:vrago/models/Settings.dart';
 import 'package:vrago/views/Map.dart';
 
 
 class VraInit extends StatefulWidget {
   ShapeLoader shpLoader;
-  VraInit(this.shpLoader);
+  VragoSettings settings;
+  VraInit(this.shpLoader,this.settings);
   @override
   VraInitState createState() => VraInitState();
 }
@@ -62,7 +64,7 @@ class VraInitState extends State<VraInit> {
                   }
                Navigator.push(
                     context,
-                   MaterialPageRoute(builder: (context) => MapSample(widget.shpLoader,var_sel,mapColor)));
+                   MaterialPageRoute(builder: (context) => MapSample(widget.shpLoader,var_sel,mapColor,widget.settings)));
 
               }, style: ElevatedButton.styleFrom(shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(30.0),

@@ -6,20 +6,22 @@ import 'package:vrago/api/LocationProvider.dart';
 class VragoSettings {
   LocationProvider lp;
   int PGNMode;
-  String DestiantionIp;
-
+  String DestiantionPort;
+  String InputPort;
 
   Map<String, dynamic> toJson() => {
     'lp': this.lp.toJson(),
     'PGNMode': this.PGNMode,
-    'DestiantionIp': this.DestiantionIp
+    'DestiantionPort': this.DestiantionPort,
+    'InputPort': this.InputPort
   };
 
   static VragoSettings fromJson(Map<String, dynamic> json)  {
     VragoSettings res=VragoSettings();
     res.PGNMode=json['PGNMode'];
     res.lp=LocationProvider.fromJson(json['lp']);
-    res.DestiantionIp=json['DestiantionIp'];
+    res.DestiantionPort=json['DestiantionPort'];
+    res.InputPort=json['InputPort'];
     return res;
   }
 
@@ -36,7 +38,8 @@ class VragoSettings {
     VragoSettings readed= VragoSettings.fromJson(jsonDecode(prefs.getString('settings')));
     this.lp=readed.lp;
     this.PGNMode=readed.PGNMode;
-    this.DestiantionIp=readed.DestiantionIp;
+    this.DestiantionPort=readed.DestiantionPort;
+    this.InputPort=readed.InputPort;
     return readed;}
     return null;
   }

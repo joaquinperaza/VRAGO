@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:vrago/api/ShapeLoader.dart';
+import 'package:vrago/api/UDPManager.dart';
 import 'package:vrago/models/Settings.dart';
 import 'package:vrago/views/Settings.dart';
 import 'package:vrago/widgets/LoadButton.dart';
@@ -28,10 +29,12 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   ShapeLoader shpLoader = new ShapeLoader();
   VragoSettings settings = new VragoSettings();
+  UDPManager udpManager=new UDPManager();
   @override
   void initState() {
 
     settings.load();
+    udpManager.init(8082, 8083);
   }
   void _incrementCounter() {
     setState(() {
@@ -46,6 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -81,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            LoadButton(shpLoader),
+            LoadButton(shpLoader,settings),
             ElevatedButton(onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => SettingPage(settings)));},
                 style: ElevatedButton.styleFrom(shape: new RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(30.0),
