@@ -3,12 +3,19 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 abstract class LocationProvider {
-  void OnNewLocation(LatLng l);
-  void init();
+  double data;
+  void init(Function(LatLng l) callback);
 
   LatLng getLocation();
   LatLng lastLocation;
   String type;
+
+
+  void OnNewLocation(LatLng l) {
+    lastLocation=l;
+    // TODO: implement OnNewLocation
+  }
+
   Map<String, dynamic> toJson() => {
     'lp_type': this.type,
   };
@@ -25,10 +32,11 @@ abstract class LocationProvider {
 }
 
 class GpsLocationProvider extends LocationProvider{
-  Location location = new Location();
-  @override
-  void init() async{
+  Location location;
 
+  @override
+  void init(Function(LatLng l) callback) async{
+    location = new Location();
     bool _serviceEnabled;
     PermissionStatus _permissionGranted;
     LocationData _locationData;
@@ -49,6 +57,7 @@ class GpsLocationProvider extends LocationProvider{
       }
     }
     location.onLocationChanged.listen((LocationData currentLocation) {
+      data=callback(LatLng(currentLocation.latitude, currentLocation.longitude));
       OnNewLocation(LatLng(currentLocation.latitude, currentLocation.longitude));
     });
   }
@@ -61,18 +70,14 @@ class GpsLocationProvider extends LocationProvider{
   LatLng getLocation(){
     return lastLocation;
   }
-  @override
-  void OnNewLocation(LatLng l) {
-    lastLocation=l;
-    // TODO: implement OnNewLocation
-  }
+
 
 }
 
 class AogLocationProvider extends LocationProvider{
 
   @override
-  void init() {
+  void init(Function(LatLng l) callback) {
     // TODO: implement init
   }
   @override
@@ -83,10 +88,9 @@ class AogLocationProvider extends LocationProvider{
   LatLng getLocation(){
 
   }
-  @override
-  void OnNewLocation(LatLng l) {
-    // TODO: implement OnNewLocation
-  }
+
+
+
 
 
 

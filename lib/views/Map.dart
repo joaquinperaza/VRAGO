@@ -26,11 +26,12 @@ class MapSampleState extends State<MapSample> {
   List<LatLng> puntos=[];
   Widget legend=Text("");
   bool showLegend=false;
-
+  GoogleMapController controller;
   Widget mainRate=Text("");
   double currentMainRate=0.0;
   bool showRate=false;
   int num=0;
+
 
   Completer<GoogleMapController> _controller = Completer();
 
@@ -38,10 +39,21 @@ class MapSampleState extends State<MapSample> {
     target: LatLng(-32.515991143477265,-57.61803204378471 ),
     zoom: 12,
   );
+  double move(LatLng l){
+    print(l);
+    widget.polygonosSHP.data.forEach((key, value) {
+      if(key.covers(jts.Point(jts.Coordinate(l.longitude,l.latitude), jts.PrecisionModel(), 4326))){
+        print(value[widget.polygonosSHP.variables[widget.var_sel][0]]);
+        return value[widget.polygonosSHP.variables[widget.var_sel][0]];
+      }
+    });
+    return 0;
+  }
 
 
   @override
   void initState() {
+
     // TODO: implement initState
     super.initState();
     int i=0;
@@ -52,13 +64,15 @@ class MapSampleState extends State<MapSample> {
       key.getCoordinates().forEach((jts.Coordinate jcord) {
         gcoords.add(Utils().jtsToGLatLng(jcord));
       });
-
       polygons.add(new Polygon(polygonId: PolygonId(i.toString()),points: gcoords,strokeWidth: 1,fillColor: widget.colores[value[widget.polygonosSHP.variables[widget.var_sel][0]]]));
     });
+    Future.delayed(Duration(seconds: 3), (){widget.settings.lp.init(move);});
+
   }
   @override
   Widget build(BuildContext context) {
-    Widget map= new GoogleMap(
+    print(widget.settings.lp.data);
+    GoogleMap map= new GoogleMap(
         mapType: MapType.hybrid,
         initialCameraPosition: VB,
         zoomControlsEnabled: true,
@@ -72,9 +86,11 @@ class MapSampleState extends State<MapSample> {
         },
         myLocationButtonEnabled: false,
         myLocationEnabled: true,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-
+        onMapCreated: (GoogleMapController control) {
+          _controller.complete(control);
+          setState(() {
+            controller=control;
+          });
         },
       );
     return Scaffold(
@@ -151,7 +167,7 @@ class MapSampleState extends State<MapSample> {
                   mainRate=Container(alignment: Alignment.topCenter,width:200,height:100,decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.all(Radius.circular(20))
-                  ),child: Column(children: [Center(child:Text("Current main rate:",style: TextStyle(fontSize: 15))),Center(child:Text(currentMainRate.toStringAsFixed(2),style: TextStyle(fontSize: 50)))],),padding: EdgeInsets.all(10),);
+                  ),child: Column(children: [Center(child:Text("Current main rate:",style: TextStyle(fontSize: 15))),Center(child:Text(widget.settings.lp.data.toStringAsFixed(2),style: TextStyle(fontSize: 50)))],),padding: EdgeInsets.all(10),);
                 });
                 print("show rate");
               } else{
@@ -169,8 +185,10 @@ class MapSampleState extends State<MapSample> {
             backgroundColor: Colors.green.shade600,
             label: 'Go to Machine',
             labelStyle: TextStyle(fontSize: 18.0),
-            onTap: () => print('SECOND CHILD'),
-            onLongPress: () => print('SECOND CHILD LONG PRESS'),
+            onTap:  (){
+
+              controller.animateCamera(CameraUpdate.newLatLng(widget.settings.lp.lastLocation));
+            },
           ),
           SpeedDialChild(
             child: Icon(Icons.fence),
