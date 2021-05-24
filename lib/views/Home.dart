@@ -24,7 +24,6 @@ class _MyHomePageState extends State<MyHomePage> {
   UDPManager udpManager=new UDPManager();
   @override
   void initState() {
-
     settings.load();
     udpManager.init(8888, 5999);
   }
@@ -77,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            LoadButton(shpLoader,settings),
+            LoadButton(shpLoader,settings,udpManager),
             ElevatedButton(onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => SettingPage(settings)));},
                 style: ElevatedButton.styleFrom(shape: new RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(30.0),

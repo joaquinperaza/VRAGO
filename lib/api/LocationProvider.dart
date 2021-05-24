@@ -2,17 +2,27 @@ import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
+import 'ShapeLoader.dart';
+import 'package:dart_jts/dart_jts.dart' as jts;
 abstract class LocationProvider {
   double data;
-  void init(Function(LatLng l) callback);
+  ShapeLoader polygons;
+  int var_sel;
+  void init(ShapeLoader polygonos, int var_s);
 
-  LatLng getLocation();
+
   LatLng lastLocation;
   String type;
 
-
   void OnNewLocation(LatLng l) {
     lastLocation=l;
+    if(polygons!=null)
+     polygons.data.forEach((key, value) {
+      if(key.covers(jts.Point(jts.Coordinate(l.longitude,l.latitude), jts.PrecisionModel(), 4326))){
+        print("&"+value[polygons.variables[var_sel][0]].toString());
+        data= value[polygons.variables[var_sel][0]];
+      }
+    });
     // TODO: implement OnNewLocation
   }
 
@@ -35,7 +45,9 @@ class GpsLocationProvider extends LocationProvider{
   Location location;
 
   @override
-  void init(Function(LatLng l) callback) async{
+  void init(ShapeLoader polygonos, int var_s) async{
+    polygons=polygonos;
+    var_sel=var_s;
     location = new Location();
     bool _serviceEnabled;
     PermissionStatus _permissionGranted;
@@ -57,7 +69,6 @@ class GpsLocationProvider extends LocationProvider{
       }
     }
     location.onLocationChanged.listen((LocationData currentLocation) {
-      data=callback(LatLng(currentLocation.latitude, currentLocation.longitude));
       OnNewLocation(LatLng(currentLocation.latitude, currentLocation.longitude));
     });
   }
@@ -77,7 +88,7 @@ class GpsLocationProvider extends LocationProvider{
 class AogLocationProvider extends LocationProvider{
 
   @override
-  void init(Function(LatLng l) callback) {
+  void init(ShapeLoader polygonos, int var_s) {
     // TODO: implement init
   }
   @override

@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:ffi';
+import 'dart:typed_data';
 
 
 import 'package:dart_jts/dart_jts.dart' as jts;
@@ -7,6 +9,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:vrago/api/LocationProvider.dart';
 import 'package:vrago/api/ShapeLoader.dart';
+import 'package:vrago/api/UDPManager.dart';
 import 'package:vrago/api/converter.dart';
 import 'package:vrago/models/Settings.dart';
 import 'package:vrago/widgets/Legend.dart';
@@ -14,9 +17,10 @@ import 'package:vrago/widgets/Legend.dart';
 class MapSample extends StatefulWidget {
   ShapeLoader polygonosSHP;
   VragoSettings settings;
+  UDPManager udp;
   int var_sel;
   Map<double,Color> colores={};
-  MapSample(this.polygonosSHP,this.var_sel,this.colores,this.settings);
+  MapSample(this.polygonosSHP,this.udp,this.var_sel,this.colores,this.settings);
   @override
   State<MapSample> createState() => MapSampleState();
 }
@@ -31,6 +35,7 @@ class MapSampleState extends State<MapSample> {
   double currentMainRate=0.0;
   bool showRate=false;
   int num=0;
+  Timer timer;
 
 
   Completer<GoogleMapController> _controller = Completer();
@@ -39,21 +44,37 @@ class MapSampleState extends State<MapSample> {
     target: LatLng(-32.515991143477265,-57.61803204378471 ),
     zoom: 12,
   );
-  double move(LatLng l){
-    print(l);
-    widget.polygonosSHP.data.forEach((key, value) {
-      if(key.covers(jts.Point(jts.Coordinate(l.longitude,l.latitude), jts.PrecisionModel(), 4326))){
-        print(value[widget.polygonosSHP.variables[widget.var_sel][0]]);
-        return value[widget.polygonosSHP.variables[widget.var_sel][0]];
-      }
-    });
-    return 0;
+
+  void checkForNewRate(){
+    if(widget.settings.lp.data!=currentMainRate)
+      setState(() {
+        currentMainRate=widget.settings.lp.data;
+      });
+    if(currentMainRate==null){
+      setState(() {
+        currentMainRate=0;
+      });
+    }
+    int rateInt=(currentMainRate*10).round();
+    int byte1 = rateInt & 0xff;
+    int byte2 = (rateInt >> 8) & 0xff;
+    widget.udp.send(PGN(113,71,2,[byte2,byte1],null).toBytes());
+    if(!showRate){
+      setState(() {
+
+        mainRate=Container(alignment: Alignment.topCenter,width:200,height:100,decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(20))
+        ),child: Column(children: [Center(child:Text("Current main rate:",style: TextStyle(fontSize: 15))),Center(child:Text(currentMainRate.toStringAsFixed(2),style: TextStyle(fontSize: 50)))],),padding: EdgeInsets.all(10),);
+      });
+    } else{
+      setState(() {
+        mainRate=Container();
+      });
+    }
   }
-
-
   @override
   void initState() {
-
     // TODO: implement initState
     super.initState();
     int i=0;
@@ -66,12 +87,19 @@ class MapSampleState extends State<MapSample> {
       });
       polygons.add(new Polygon(polygonId: PolygonId(i.toString()),points: gcoords,strokeWidth: 1,fillColor: widget.colores[value[widget.polygonosSHP.variables[widget.var_sel][0]]]));
     });
-    Future.delayed(Duration(seconds: 3), (){widget.settings.lp.init(move);});
+    Future.delayed(Duration(seconds: 3), (){widget.settings.lp.init(widget.polygonosSHP,widget.var_sel);});
+    timer = Timer.periodic(Duration(milliseconds: 500), (Timer t) => checkForNewRate());
+  }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    timer.cancel();
   }
   @override
   Widget build(BuildContext context) {
-    print(widget.settings.lp.data);
+
     GoogleMap map= new GoogleMap(
         mapType: MapType.hybrid,
         initialCameraPosition: VB,
@@ -164,17 +192,12 @@ class MapSampleState extends State<MapSample> {
               if(!showRate){
                 setState(() {
                   showRate=true;
-                  mainRate=Container(alignment: Alignment.topCenter,width:200,height:100,decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(20))
-                  ),child: Column(children: [Center(child:Text("Current main rate:",style: TextStyle(fontSize: 15))),Center(child:Text(widget.settings.lp.data.toStringAsFixed(2),style: TextStyle(fontSize: 50)))],),padding: EdgeInsets.all(10),);
                 });
                 print("show rate");
               } else{
-                showRate=false;
                 print("no rate");
                 setState(() {
-                  mainRate=Container();
+                  showRate=false;
                 });
               }
             },

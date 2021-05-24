@@ -2,6 +2,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:vrago/api/ShapeLoader.dart';
+import 'package:vrago/api/UDPManager.dart';
 import 'package:vrago/models/Settings.dart';
 import 'package:vrago/views/VraInit.dart';
 
@@ -9,7 +10,8 @@ import 'package:vrago/views/VraInit.dart';
 class LoadButton extends StatefulWidget {
   ShapeLoader shpLoader;
   VragoSettings settings;
-  LoadButton(this.shpLoader,this.settings);
+  UDPManager udp;
+  LoadButton(this.shpLoader,this.settings,this.udp);
   @override
   LoadButtonState createState() => LoadButtonState();
 }
@@ -39,7 +41,7 @@ class LoadButtonState extends State<LoadButton> {
         });
         Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => VraInit(widget.shpLoader,widget.settings)));
+            MaterialPageRoute(builder: (context) => VraInit(widget.shpLoader,widget.settings,widget.udp)));
 
       }, style: ElevatedButton.styleFrom(shape: new RoundedRectangleBorder(
         borderRadius: new BorderRadius.circular(30.0),

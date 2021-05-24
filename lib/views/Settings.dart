@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vrago/api/LocationProvider.dart';
 import 'package:vrago/models/Settings.dart';
+import 'package:vrago/views/SetSections.dart';
 
 class SettingPage extends StatefulWidget {
   final VragoSettings settings;
@@ -24,7 +25,12 @@ class SettingPageState extends State<SettingPage> {
       ListTile(
         title: Row(children: [Text("Internal  ",),ElevatedButton(style: ElevatedButton.styleFrom(shape: new RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(20.0)),fixedSize: Size(150, 20)),
-            onPressed: (){},child: Row(children: [Icon(Icons.miscellaneous_services),Text(' Set sections',style: TextStyle(fontSize: 15),)]))],),
+            onPressed: (){
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SetSections(widget.settings)));
+
+            },child: Row(children: [Icon(Icons.miscellaneous_services),Text(' Set sections',style: TextStyle(fontSize: 15),)]))],),
         leading: Radio<String>(
           value: "GPS",
           groupValue: widget.settings.lp.type,

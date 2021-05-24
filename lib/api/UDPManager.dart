@@ -23,14 +23,25 @@ class PGN{
     while(byte>256){
       byte-=256;
     }
-    return byte==crc;
+    return byte==this.crc;
   }
+  int getCRC(){
+    int byte=source+pgnId+length+dataBytes.reduce((a, b) => a + b);
+    while(byte>256){
+      byte-=256;
+    }
+    return byte;
+  }
+
 
 
   @override
   String toString() {
     // TODO: implement toString
-    return "PGN: \n"+"Source: "+source.toString()+"\n"+"PGN ID: "+pgnId.toString()+"\n"+"Length: "+length.toString()+"\n"+"DataBytes: "+dataBytes.toString()+"\n"+"CRC: "+crc.toString()+"\n"+"Valid: "+isValid().toString()+"\n";
+    return "PGN - Source: "+source.toString()+" - ID: "+pgnId.toString()+" - Length: "+length.toString()+"\n"+"DataBytes: "+dataBytes.toString()+"\n"+"CRC: "+crc.toString()+" - Valid: "+isValid().toString()+"\n";
+  }
+  List<int> toBytes(){
+    return [128,129,source,pgnId,length]+dataBytes+[getCRC()];
   }
   static PGN fromBytes(List<int> datagram){
     for(int i=0; i<datagram.length; i++){
@@ -51,23 +62,23 @@ class UDPManager {
     portInput=_portInput;
     portOutput=_portOutput;
 
-
     // creates a new UDP instance and binds it to the local address and the port
     // 65002.
-
+    if(portInput!=null){
     receiver = await UDP.bind(Endpoint.unicast(InternetAddress.anyIPv4, port: Port(_portInput)));
-
     // receiving\listening
     var success=receiver.listen((Datagram datagram) {
-      print(PGN.fromBytes(datagram.data));
+     // print(PGN.fromBytes(datagram.data).toBytes());
     },timeout: Duration(days: 1));
     print("UDP LISTEN");
     send([71,74]);
 
     // close
-
+    }
   }
+
   void send(List<int> packet)async {
+    print("Bytes sended: "+packet.toString());
     UDP sender = await UDP.bind(Endpoint.any(port: Port(portOutput)));
     var dataLength = await sender.send(packet,
     Endpoint.broadcast(port: Port(portOutput))).catchError((a){
