@@ -2,18 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ef30f1a6-bc4b-4342-b5f6-05200eee5f29" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/lib/views/SetSections.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/widgets/RateWidget.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins-dependencies" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/api/LocationProvider.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/api/LocationProvider.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/api/UDPManager.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/api/UDPManager.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/Settings.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/Settings.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/views/Home.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/views/Home.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/views/Map.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/views/Map.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/views/Settings.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/views/Settings.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/views/VraInit.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/views/VraInit.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/LoadButton.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/LoadButton.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

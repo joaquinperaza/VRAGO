@@ -4,12 +4,12 @@ import 'package:location/location.dart';
 
 import 'ShapeLoader.dart';
 import 'package:dart_jts/dart_jts.dart' as jts;
+
 abstract class LocationProvider {
   double data;
   ShapeLoader polygons;
   int var_sel;
   void init(ShapeLoader polygonos, int var_s);
-
 
   LatLng lastLocation;
   String type;
