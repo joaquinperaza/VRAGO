@@ -78,12 +78,12 @@ class UDPManager {
   }
 
   void send(List<int> packet)async {
+
     print("Bytes sended: "+packet.toString());
     UDP sender = await UDP.bind(Endpoint.any(port: Port(portOutput)));
     var dataLength = await sender.send(packet,
     Endpoint.broadcast(port: Port(portOutput))).catchError((a){
      sender.close();
-
     });
     sender.close();
   }

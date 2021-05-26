@@ -6,8 +6,8 @@ import 'package:vrago/api/LocationProvider.dart';
 class VragoSettings {
   LocationProvider lp=GpsLocationProvider();
   int PGNMode;
-  String DestiantionPort;
-  String InputPort;
+  int DestiantionPort;
+  int InputPort;
   List<int> Sections=[200,100,150,150];
   int Offset;
 

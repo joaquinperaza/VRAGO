@@ -18,9 +18,25 @@ class SetSectionsState extends State<SetSections> {
   }
   @override
   Widget build(BuildContext context) {
-    Widget button=Row(children: [
+    Widget button=Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      ElevatedButton(style: ElevatedButton.styleFrom(shape: new RoundedRectangleBorder(
+          borderRadius: new BorderRadius.circular(20.0)),fixedSize: Size(120, 20)),
+          onPressed: (){
+        setState(() {
+          widget.settings.Sections.removeLast();
+        });
 
-    ],);
+          },child: Row(children: [Icon(Icons.remove),Text(' section',style: TextStyle(fontSize: 15),)])),
+      Padding(padding: EdgeInsets.all(5)),
+      ElevatedButton(style: ElevatedButton.styleFrom(shape: new RoundedRectangleBorder(
+          borderRadius: new BorderRadius.circular(20.0)),fixedSize: Size(120, 20)),
+          onPressed: (){
+        setState(() {
+          widget.settings.Sections.add(0);
+        });
+
+          },child: Row(children: [Icon(Icons.add),Text(' section',style: TextStyle(fontSize: 15),)]))
+      ,Padding(padding: EdgeInsets.all(15)),],);
     List<Widget> chips=[];
     for(int i=0;i<widget.settings.Sections.length;i++){
       int section = widget.settings.Sections[i];
@@ -45,7 +61,6 @@ class SetSectionsState extends State<SetSections> {
               int w=int.parse(val);
               setState(() {
                 widget.settings.Sections[i]=w;
-                widget.settings.save();
               });
             }catch(e){}
           },
@@ -57,15 +72,34 @@ class SetSectionsState extends State<SetSections> {
         ),
       ));
     }
+    Widget offset=Column(children: [Padding(padding: EdgeInsets.only(top: 15, bottom: 10),child: Wrap(children: [Text("Offset from left to center (#1 section border - antenna center) in cms:")],)),TextFormField(
+      initialValue: widget.settings.Offset.toString(),
+      onChanged: (String val){
+        widget.settings.Offset=int.parse(val);
+
+      },
+      decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          hintText: 'Offset from left side (#1 section border) in cms'
+      ),
+    )],);
     Widget res=Container(
       padding: EdgeInsets.only(top: 45,left:10,right: 10),
-      child: Column(children: [button,Wrap(children: chips,)],),
+      child: Column(children: [button,Wrap(children: chips,),offset],),
     );
     return Scaffold(
         appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text("Set sections"),
+          actions: [IconButton(
+            icon: const Icon(Icons.save),
+            tooltip: 'Save',
+            onPressed: () {
+              widget.settings.save();
+              Navigator.pop(context);
+            },
+          )],
     ),body: res,);
   }
 }

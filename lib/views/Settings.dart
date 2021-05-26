@@ -86,9 +86,9 @@ class SettingPageState extends State<SettingPage> {
       Padding(padding: EdgeInsets.all(30)),
       Text("UDP Input Port"),
       TextFormField(
-        initialValue: widget.settings.InputPort,
+        initialValue: widget.settings.InputPort.toString(),
         onChanged: (String val){
-          widget.settings.InputPort=val;
+          widget.settings.InputPort=int.parse(val);
           widget.settings.save();
         },
         decoration: InputDecoration(
@@ -98,9 +98,9 @@ class SettingPageState extends State<SettingPage> {
       ),Padding(padding: EdgeInsets.all(30)),
       Text("UDP Output Port"),
       TextFormField(
-        initialValue: widget.settings.DestiantionPort,
+        initialValue: widget.settings.DestiantionPort.toString(),
         onChanged: (String val){
-          widget.settings.DestiantionPort=val;
+          widget.settings.DestiantionPort=int.parse(val);
           widget.settings.save();
         },
         decoration: InputDecoration(

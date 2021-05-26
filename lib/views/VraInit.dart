@@ -20,6 +20,7 @@ class VraInit extends StatefulWidget {
 
 class VraInitState extends State<VraInit> {
   int var_sel=-1;
+  double defRate=0;
   Widget next_btn;
   @override
   void initState() {
@@ -64,9 +65,10 @@ class VraInitState extends State<VraInit> {
                   for(int i=0;i<rates.length;i++){
                     mapColor[rates[i]]=colores[i];
                   }
+                  widget.udp.init(widget.settings.InputPort, widget.settings.DestiantionPort);
                Navigator.push(
                     context,
-                   MaterialPageRoute(builder: (context) => MapSample(widget.shpLoader,widget.udp,var_sel,mapColor,widget.settings)));
+                   MaterialPageRoute(builder: (context) => MapSample(widget.shpLoader,widget.udp,var_sel,mapColor,widget.settings,defRate)));
 
               }, style: ElevatedButton.styleFrom(shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(30.0),
@@ -87,6 +89,14 @@ class VraInitState extends State<VraInit> {
         ),
       Center(child:Text("Currently one layer supported!")),
       Center(child:Text("Future work will enable more than one product")),
+          Container(padding: EdgeInsets.only(top: 25,bottom: 5),child:Text("Set default rate (when outside polygon):")),
+      TextFormField(initialValue: defRate.toStringAsFixed(1),
+        keyboardType: TextInputType.number,
+        onChanged: (String val){
+        setState(() {
+          defRate=double.parse(val);
+        });
+      },),
       next_btn
 
     ],));

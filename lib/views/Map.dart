@@ -19,20 +19,23 @@ class MapSample extends StatefulWidget {
   VragoSettings settings;
   UDPManager udp;
   int var_sel;
+  double defRate=0;
   Map<double,Color> colores={};
-  MapSample(this.polygonosSHP,this.udp,this.var_sel,this.colores,this.settings);
+  MapSample(this.polygonosSHP,this.udp,this.var_sel,this.colores,this.settings,this.defRate);
   @override
   State<MapSample> createState() => MapSampleState();
 }
 
 class MapSampleState extends State<MapSample> {
   Set<Polygon> polygons=new Set();
+  Set<Marker> sectionsPnt=new Set();
   List<LatLng> puntos=[];
   Widget legend=Text("");
   bool showLegend=false;
+  bool showMarkers=false;
   GoogleMapController controller;
   Widget mainRate=Text("");
-  double currentMainRate=0.0;
+  List<double> currentMainRate= [];
   bool showRate=false;
   int num=0;
   Timer timer;
@@ -45,27 +48,55 @@ class MapSampleState extends State<MapSample> {
     zoom: 12,
   );
 
-  void checkForNewRate(){
+  void checkForNewRate()async{
+    if(!showMarkers){
+      setState(() {
+        sectionsPnt.clear();
+      });
+
+    }
     if(widget.settings.lp.data!=currentMainRate)
       setState(() {
         currentMainRate=widget.settings.lp.data;
+        sectionsPnt.clear();
       });
     if(currentMainRate==null){
       setState(() {
-        currentMainRate=0;
+        currentMainRate=[];
       });
     }
-    int rateInt=(currentMainRate*10).round();
-    int byte1 = rateInt & 0xff;
-    int byte2 = (rateInt >> 8) & 0xff;
-    widget.udp.send(PGN(113,71,2,[byte2,byte1],null).toBytes());
+    List<Widget> chips=[];
+    for(int i=0; i<widget.settings.Sections.length;i++){
+      if(currentMainRate.length==widget.settings.Sections.length){
+        double rate=currentMainRate[i];
+        if(rate<0){
+          rate=widget.defRate;
+        }
+      int rateInt=(rate*10).round();
+      int byte1 = rateInt & 0xff;
+      int byte2 = (rateInt >> 8) & 0xff;
+      await widget.udp.send(PGN(113,71,3,[i,byte2,byte1],null).toBytes());
+
+      chips.add(Padding(child: Chip(
+        backgroundColor: widget.colores[rate],
+        label: Text("#"+i.toString()+": "+rate.toStringAsFixed(1)),
+      ),padding: EdgeInsets.all(2),));
+      setState(() {
+        if(showMarkers)
+          sectionsPnt.add(Marker(markerId: MarkerId(i.toString()),position: widget.settings.lp.section[i],infoWindow: InfoWindow(title: "#"+i.toString())));
+      });
+
+      }
+    }
+    
+
     if(!showRate){
       setState(() {
 
-        mainRate=Container(alignment: Alignment.topCenter,width:200,height:100,decoration: BoxDecoration(
+        mainRate=Container(alignment: Alignment.topCenter,width:300,height:150,decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(20))
-        ),child: Column(children: [Center(child:Text("Current main rate:",style: TextStyle(fontSize: 15))),Center(child:Text(currentMainRate.toStringAsFixed(2),style: TextStyle(fontSize: 50)))],),padding: EdgeInsets.all(10),);
+        ),child: Column(children: [Center(child:Text("Current rates:",style: TextStyle(fontSize: 15))),Center(child:Wrap(children: chips,))],),padding: EdgeInsets.all(10),);
       });
     } else{
       setState(() {
@@ -78,6 +109,7 @@ class MapSampleState extends State<MapSample> {
     // TODO: implement initState
     super.initState();
     int i=0;
+    widget.colores[widget.defRate]=Colors.grey;
     print(widget.colores);
     widget.polygonosSHP.data.forEach((jts.Polygon key, List<double> value) {
       i++;
@@ -87,7 +119,7 @@ class MapSampleState extends State<MapSample> {
       });
       polygons.add(new Polygon(polygonId: PolygonId(i.toString()),points: gcoords,strokeWidth: 1,fillColor: widget.colores[value[widget.polygonosSHP.variables[widget.var_sel][0]]]));
     });
-    Future.delayed(Duration(seconds: 3), (){widget.settings.lp.init(widget.polygonosSHP,widget.var_sel);});
+    Future.delayed(Duration(seconds: 3), (){widget.settings.lp.init(widget.polygonosSHP,widget.var_sel,widget.settings);});
     timer = Timer.periodic(Duration(milliseconds: 500), (Timer t) => checkForNewRate());
   }
 
@@ -114,6 +146,7 @@ class MapSampleState extends State<MapSample> {
         },
         myLocationButtonEnabled: false,
         myLocationEnabled: true,
+        markers: sectionsPnt,
         onMapCreated: (GoogleMapController control) {
           _controller.complete(control);
           setState(() {
@@ -162,8 +195,26 @@ class MapSampleState extends State<MapSample> {
         // childMarginTop: 2,
         children: [
           SpeedDialChild(
+            child: Icon(Icons.location_pin),
+            backgroundColor: Colors.orangeAccent,
+            label: 'Toggle Sections',
+            labelStyle: TextStyle(fontSize: 18.0),
+            onTap: () {
+              if(!showMarkers){
+                setState(() {
+                  showMarkers=true;
+                });
+              } else{
+
+                setState(() {
+                  showMarkers=false;
+                });
+              }
+            },
+            onLongPress: () => print('FIRST CHILD LONG PRESS'),
+          ),SpeedDialChild(
             child: Icon(Icons.map_sharp),
-            backgroundColor: Colors.blue.shade900,
+            backgroundColor: Colors.orangeAccent,
             label: 'Toggle Legend',
             labelStyle: TextStyle(fontSize: 18.0),
             onTap: () {

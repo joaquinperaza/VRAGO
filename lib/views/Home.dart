@@ -25,7 +25,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     settings.load();
-    udpManager.init(8888, 5999);
   }
   void _incrementCounter() {
     setState(() {
