@@ -42,5 +42,6 @@ The rate bytes define a 2 byte unsigned int that correspond to 10,000X the units
 
 | | | |
 |:-------------------------:|:-------------------------:|:-------------------------:|
-| <img src="https://i.ibb.co/9nr9Bx0/Simulator-Screen-Shot-i-Phone-8-2021-05-26-at-22-12-24.png" width="200"> | <img src="https://i.ibb.co/C789gqm/Simulator-Screen-Shot-i-Phone-8-2021-05-26-at-22-12-10.png" width="200"> | <img src="https://i.ibb.co/ZL8c4nV/Simulator-Screen-Shot-i-Phone-8-2021-05-26-at-22-07-23.png" width="200"> |
 | <img src="https://i.ibb.co/SvQBKDP/Simulator-Screen-Shot-i-Phone-8-2021-05-26-at-22-05-39.png" width="200"> | <img src="https://i.ibb.co/gmRJ1QV/Simulator-Screen-Shot-i-Phone-8-2021-05-26-at-22-12-58.png" width="200"> | <img src="https://i.ibb.co/qNBw9sG/Simulator-Screen-Shot-i-Phone-8-2021-05-26-at-22-13-01.png" width="200">|
+| <img src="https://i.ibb.co/9nr9Bx0/Simulator-Screen-Shot-i-Phone-8-2021-05-26-at-22-12-24.png" width="200"> | <img src="https://i.ibb.co/C789gqm/Simulator-Screen-Shot-i-Phone-8-2021-05-26-at-22-12-10.png" width="200"> | <img src="https://i.ibb.co/ZL8c4nV/Simulator-Screen-Shot-i-Phone-8-2021-05-26-at-22-07-23.png" width="200"> |
+
