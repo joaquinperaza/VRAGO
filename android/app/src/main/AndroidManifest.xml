@@ -3,6 +3,7 @@
    <application
         android:label="vrago"
         android:icon="@mipmap/ic_launcher">
+
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -37,5 +38,8 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+       <meta-data
+           android:name="com.google.android.geo.API_KEY"
+           android:value="AIzaSyBDjIsok-yndEQmPTR5RqZXgrvOHL3ipd4"/>
     </application>
 </manifest>

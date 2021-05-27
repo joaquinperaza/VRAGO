@@ -66,25 +66,37 @@ class MapSampleState extends State<MapSample> {
       });
     }
     List<Widget> chips=[];
-    for(int i=0; i<widget.settings.Sections.length;i++){
-      if(currentMainRate.length==widget.settings.Sections.length){
-        double rate=currentMainRate[i];
-        if(rate<0){
-          rate=widget.defRate;
+    for(int i=0; i<widget.settings.Sections.length;i++) {
+      if (currentMainRate.length == widget.settings.Sections.length) {
+        double rate = currentMainRate[i];
+        if (rate < 0) {
+          rate = widget.defRate;
         }
-      int rateInt=(rate*10).round();
-      int byte1 = rateInt & 0xff;
-      int byte2 = (rateInt >> 8) & 0xff;
-      await widget.udp.send(PGN(113,71,3,[i,byte2,byte1],null).toBytes());
+        int rateInt;
+        //rate/ha * 0.000001 = rate/0.01m2 = prescription for a rectangle of 1m(dispalcement)*1cm(implment width)
+        //using 0.01 coeficient allow to send *10,000 rate_section_m value as int
+        if(widget.settings.PGNMode==2){
+          double rate_cm_m = rate * 0.01;
+          double rate_section_m = rate_cm_m * widget.settings.Sections[i];
+          rateInt=(rate_section_m).round();
+        }else{
+          rateInt=0;
+        }
+        rateInt=65534;
+        int byte1 = rateInt & 0xff;
+        int byte2 = (rateInt >> 8) & 0xff;
 
-      chips.add(Padding(child: Chip(
-        backgroundColor: widget.colores[rate],
-        label: Text("#"+i.toString()+": "+rate.toStringAsFixed(1)),
-      ),padding: EdgeInsets.all(2),));
-      setState(() {
-        if(showMarkers)
-          sectionsPnt.add(Marker(markerId: MarkerId(i.toString()),position: widget.settings.lp.section[i],infoWindow: InfoWindow(title: "#"+i.toString())));
-      });
+        //rate/ha * 0.000001 = rate/0.01m2=a rectangle of 1m(dispalcement)*1cm(implment width)
+        await widget.udp.send(PGN(113,71,3,[i,byte2,byte1],null).toBytes());
+
+        chips.add(Padding(child: Chip(
+          backgroundColor: widget.colores[rate],
+          label: Text("#"+i.toString()+": "+rate.toStringAsFixed(1)),
+        ),padding: EdgeInsets.all(2),));
+        setState(() {
+          if(showMarkers)
+            sectionsPnt.add(Marker(markerId: MarkerId(i.toString()),position: widget.settings.lp.section[i],infoWindow: InfoWindow(title: "#"+i.toString())));
+        });
 
       }
     }
@@ -269,7 +281,22 @@ class MapSampleState extends State<MapSample> {
             backgroundColor: Colors.green.shade600,
             label: 'Go to Field',
             labelStyle: TextStyle(fontSize: 18.0),
-            onTap: () => print('SECOND CHILD'),
+            onTap: () {
+              double south=89;
+              double north=-89;
+              double east=-180;
+              double west=180;
+              polygons.forEach((poly) {
+                poly.points.forEach((l) {
+                  if(l.latitude>north){north=l.latitude;}
+                  if(l.latitude<south){south=l.latitude;}
+                  if(l.longitude>east){east=l.longitude;}
+                  if(l.longitude<west){west=l.longitude;}
+                });
+              });
+              LatLngBounds limit=new LatLngBounds(southwest: LatLng(south,west), northeast: LatLng(north,east));
+              controller.animateCamera(CameraUpdate.newLatLngBounds(limit, 1));
+            },
             onLongPress: () => print('SECOND CHILD LONG PRESS'),
           ),
 

@@ -5,11 +5,11 @@ import 'package:vrago/api/LocationProvider.dart';
 
 class VragoSettings {
   LocationProvider lp=GpsLocationProvider();
-  int PGNMode;
-  int DestiantionPort;
-  int InputPort;
-  List<int> Sections=[200,100,150,150];
-  int Offset;
+  int PGNMode=2;
+  int DestiantionPort=9988;
+  int InputPort=8888;
+  List<int> Sections=[250,250,250,250];
+  int Offset=1000;
 
   Map<String, dynamic> toJson() => {
     'lp': this.lp.toJson(),
@@ -41,7 +41,7 @@ class VragoSettings {
   Future<VragoSettings> load() async{
     print("Loading old settings");
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    //prefs.clear();
+//    prefs.clear();
     if(prefs.getString('settings')!=null){
     VragoSettings readed= VragoSettings.fromJson(jsonDecode(prefs.getString('settings')));
     this.lp=readed.lp;
