@@ -82,7 +82,7 @@ class MapSampleState extends State<MapSample> {
         }else{
           rateInt=0;
         }
-        rateInt=65534;
+
         int byte1 = rateInt & 0xff;
         int byte2 = (rateInt >> 8) & 0xff;
 
@@ -295,7 +295,7 @@ class MapSampleState extends State<MapSample> {
                 });
               });
               LatLngBounds limit=new LatLngBounds(southwest: LatLng(south,west), northeast: LatLng(north,east));
-              controller.animateCamera(CameraUpdate.newLatLngBounds(limit, 1));
+              controller.animateCamera(CameraUpdate.newLatLngBounds(limit, 10));
             },
             onLongPress: () => print('SECOND CHILD LONG PRESS'),
           ),
