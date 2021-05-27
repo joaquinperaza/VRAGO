@@ -32,4 +32,10 @@ byte9= CRC (AOG-CRC, see calculation in lib/api/UDPManager.dart)
 
 The rate bytes define a 2 byte unsigned int that correspond to 10,000X the units to apply in 1 meter of displacement of the section.
 
+## TO-DO
+- AOG as location provider (Over UDP PGN) 
+- Read sections from AOG automatically (Over UDP PGN) 
+- TCP/UDP Location provider with NMEA parser
+- ESP32 Demo code
+
 
