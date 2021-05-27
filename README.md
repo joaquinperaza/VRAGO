@@ -10,7 +10,7 @@ First set the preferences in the settings menu
 - Currently only internal gps supported
 - Only PGN mode section flow/dist supported
 - Set UDP output (input not used yet)
-- Set sections structure
+- Set sections structure (define section # and width in cms, also antenna offset [normal is total width/2])
 
 Please to test it load a shpafile (.shp+.shx+.dbf). Then app would ask to select one of the numeric columns in your prescription shapefile, and a default rate when no polygon is found. 
 __Important: unit should be units/ha.__
