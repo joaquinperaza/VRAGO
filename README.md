@@ -1,6 +1,6 @@
 # vrago
 
-Variable Rate for Ag Open
+Variable Rate for Ag Open, project coded in Flutter, supporting Android, iOS, and also windows soon!
 
 ## Getting Started
 
@@ -37,6 +37,7 @@ The rate bytes define a 2 byte unsigned int that correspond to 10,000X the units
 - Read sections from AOG automatically (Over UDP PGN) 
 - TCP/UDP Location provider with NMEA parser
 - ESP32 Demo code
+- Windows support using AOG or TCP/UDP locations provider
 
 ## Screenshots
 
