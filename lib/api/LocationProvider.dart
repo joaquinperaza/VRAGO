@@ -18,6 +18,7 @@ abstract class LocationProvider {
   LatLng lastLocation;
   String type;
   VragoSettings settings;
+  double speed; //m * s^-1
 
   void OnNewLocation(LatLng l) {
 
@@ -110,6 +111,7 @@ class GpsLocationProvider extends LocationProvider{
     }
     location.onLocationChanged.listen((LocationData currentLocation) {
       OnNewLocation(LatLng(currentLocation.latitude, currentLocation.longitude));
+      this.speed=currentLocation.speed;
     });
   }
 

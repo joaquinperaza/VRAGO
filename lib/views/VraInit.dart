@@ -95,6 +95,7 @@ class VraInitState extends State<VraInit> {
         onChanged: (String val){
         setState(() {
           defRate=double.parse(val);
+          defRate+=0.000000001;//to prevent mixing with values inside polygons
         });
       },),
       next_btn

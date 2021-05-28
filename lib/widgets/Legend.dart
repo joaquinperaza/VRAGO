@@ -20,7 +20,11 @@ class MapLegendState extends State<MapLegend> {
     super.initState();
     widget.colores.forEach((key, value) {
       print(key);
-      legends.add(Row(children: [Container(height: 15,width: 15,color: value,),Text(key.toString())],));
+      if(key<10){legends.add(Row(children: [Container(height: 15,width: 15,color: value,),Text(key.toStringAsFixed(3))],));}
+      else if (key<100)
+      {legends.add(Row(children: [Container(height: 15,width: 15,color: value,),Text(key.toStringAsFixed(1))],));}
+      else 
+      {legends.add(Row(children: [Container(height: 15,width: 15,color: value,),Text(key.toStringAsFixed(0))],));}
 
     });
     print(legends);

@@ -29,10 +29,10 @@ class MapSample extends StatefulWidget {
 class MapSampleState extends State<MapSample> {
   Set<Polygon> polygons=new Set();
   Set<Marker> sectionsPnt=new Set();
-  List<LatLng> puntos=[];
   Widget legend=Text("");
   bool showLegend=false;
   bool showMarkers=false;
+  bool followMachine=false;
   GoogleMapController controller;
   Widget mainRate=Text("");
   List<double> currentMainRate= [];
@@ -100,6 +100,7 @@ class MapSampleState extends State<MapSample> {
 
       }
     }
+    if(followMachine){  controller.animateCamera(CameraUpdate.newLatLng(widget.settings.lp.lastLocation));}
     
 
     if(!showRate){
@@ -152,9 +153,13 @@ class MapSampleState extends State<MapSample> {
         onLongPress: (L){
           print("DAOSDNASODNSADNOA");
           setState(() {
-            puntos=[];
-            num=num+1;
+            setState(() {
+              followMachine=false;
+            });
           });
+        },
+        onTap: (Pos){
+
         },
         myLocationButtonEnabled: false,
         myLocationEnabled: true,
@@ -269,11 +274,13 @@ class MapSampleState extends State<MapSample> {
           SpeedDialChild(
             child: Icon(Icons.location_searching),
             backgroundColor: Colors.green.shade600,
-            label: 'Go to Machine',
+            label: 'Follow Machine',
             labelStyle: TextStyle(fontSize: 18.0),
             onTap:  (){
 
-              controller.animateCamera(CameraUpdate.newLatLng(widget.settings.lp.lastLocation));
+            setState(() {
+              followMachine=!followMachine;
+            });
             },
           ),
           SpeedDialChild(

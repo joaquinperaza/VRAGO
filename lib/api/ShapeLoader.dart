@@ -13,7 +13,7 @@ class ShapeLoader{
 
 
 Future<void> loadFile(String shp_p,String shx_p,String dbf_p) async{
-
+    int geoms=0;
     File shpfile= File(shp_p);
     File shxfile= File(shx_p);
     File dbffile= File(dbf_p);
@@ -24,6 +24,7 @@ Future<void> loadFile(String shp_p,String shx_p,String dbf_p) async{
     DbaseFileReader DBF=DbaseFileReader(dbf);
 
     void read(){
+
       SHP.nextRecord().then((Record record) async {
         Row fila=await DBF.readRow();
 
@@ -35,6 +36,7 @@ Future<void> loadFile(String shp_p,String shx_p,String dbf_p) async{
           valores.add(val.toDouble());
         });
         if(mp.getGeometryType()=="MultiPolygon") {
+          print(mp.getNumGeometries());
           for(int i=0; i<mp.getNumGeometries();i++){
             data[mp.getGeometryN(i)]=valores;
           }
@@ -42,11 +44,13 @@ Future<void> loadFile(String shp_p,String shx_p,String dbf_p) async{
         if(mp.getGeometryType()=="Polygon") {data[mp]=valores;}
       }).whenComplete(() async { if(await SHP.hasNext()){
         read();
+        geoms++;
       }else{
         print(variables);
         data.forEach((Polygon key, List<double> value) {
           print("vertex: "+key.getCoordinates().length.toString()+" rates:"+value.toString());
         });
+        print(geoms.toString()+" polygons");
       }});
     }
 
