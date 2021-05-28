@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:vrago/api/UDPManager.dart';
 import 'package:vrago/models/Settings.dart';
 
 import 'ShapeLoader.dart';
@@ -13,19 +14,19 @@ abstract class LocationProvider {
   List<LatLng> section=[];
   ShapeLoader polygons;
   int var_sel;
-  void init(ShapeLoader polygonos, int var_s, VragoSettings _settings);
+  void init(ShapeLoader polygonos, int var_s, VragoSettings _settings, UDPManager u);
   void stop();
   LatLng lastLocation;
   String type;
   VragoSettings settings;
   double speed; //m * s^-1
 
-  void OnNewLocation(LatLng l) {
+  void OnNewLocation(LatLng l,[double heading]) {
 
     if(polygons!=null && lastLocation!=null && l!=lastLocation){
       geo.Geodesy geodesy=geo.Geodesy();
       geo.LatLng now=geo.LatLng(l.latitude, l.longitude);
-      double heading=geodesy.bearingBetweenTwoGeoPoints(geo.LatLng(lastLocation.latitude, lastLocation.longitude),now);
+      if(heading==null) {heading=geodesy.bearingBetweenTwoGeoPoints(geo.LatLng(lastLocation.latitude, lastLocation.longitude),now);}
       lastLocation=l;
       double cross=heading+90;
       print("heading");
@@ -84,7 +85,7 @@ class GpsLocationProvider extends LocationProvider{
   Location location = new Location();
 
   @override
-  void init(ShapeLoader polygonos, int var_s, VragoSettings _settings) async{
+  void init(ShapeLoader polygonos, int var_s, VragoSettings _settings, UDPManager u) async{
     settings=_settings;
 
     polygons=polygonos;
@@ -134,10 +135,27 @@ class GpsLocationProvider extends LocationProvider{
 }
 
 class AogLocationProvider extends LocationProvider{
-
+  UDPManager udp;
   @override
-  void init(ShapeLoader polygonos, int var_s, VragoSettings _settings) {
-    // TODO: implement init
+  void init(ShapeLoader polygonos, int var_s, VragoSettings _settings, UDPManager udpManager) async{
+    settings=_settings;
+
+    polygons=polygonos;
+    var_sel=var_s;
+    udp=udpManager;
+    udp.listen((lat, lng, spd, hdg) {
+      OnNewLocation(LatLng(lat, lng),hdg);
+      this.speed=spd/3.6;
+    });
+
+
+
+
+
+    //location.onLocationChanged.listen((LocationData currentLocation) {
+    //  OnNewLocation(LatLng(currentLocation.latitude, currentLocation.longitude));
+    //  this.speed=currentLocation.speed;
+    //});
   }
   @override
   // TODO: implement type

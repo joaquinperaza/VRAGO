@@ -132,7 +132,7 @@ class MapSampleState extends State<MapSample> {
       });
       polygons.add(new Polygon(polygonId: PolygonId(i.toString()),points: gcoords,strokeWidth: 1,fillColor: widget.colores[value[widget.polygonosSHP.variables[widget.var_sel][0]]]));
     });
-    Future.delayed(Duration(seconds: 3), (){widget.settings.lp.init(widget.polygonosSHP,widget.var_sel,widget.settings);});
+    Future.delayed(Duration(seconds: 3), (){widget.settings.lp.init(widget.polygonosSHP,widget.var_sel,widget.settings,widget.udp);});
     timer = Timer.periodic(Duration(milliseconds: 500), (Timer t) => checkForNewRate());
   }
 
@@ -141,6 +141,7 @@ class MapSampleState extends State<MapSample> {
     // TODO: implement dispose
     super.dispose();
     timer.cancel();
+    widget.udp.close();
   }
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:udp/udp.dart';
+import 'dart:typed_data';
 
 class PGN{
   int source;
@@ -58,7 +59,23 @@ class UDPManager {
   int portInput;
   int portOutput;
   UDP receiver;
+  Function (double lat,double lng, double spd, double hdg) update;
+  void parseLocationPGN(PGN pgn){
+    Uint8List lat_bytes=Uint8List.fromList(pgn.dataBytes.sublist(8,16).reversed.toList());
+    double lat=lat_bytes.buffer.asByteData().getFloat64(0);
+    Uint8List lon_bytes=Uint8List.fromList(pgn.dataBytes.sublist(0,8).reversed.toList());
+    double lon=lon_bytes.buffer.asByteData().getFloat64(0);
+
+    Uint8List hdg_bytes=Uint8List.fromList(pgn.dataBytes.sublist(20,24).reversed.toList());
+    double hdg=hdg_bytes.buffer.asByteData().getFloat32(0);
+
+    Uint8List spd_bytes=Uint8List.fromList(pgn.dataBytes.sublist(24,28).reversed.toList());
+    double spd=spd_bytes.buffer.asByteData().getFloat32(0);
+    update(lat,lon,spd,hdg);
+
+  }
   void  init(int _portInput, int _portOutput)async{
+    update= (double lat,double lng, double spd, double hdg){};
     portInput=_portInput;
     portOutput=_portOutput;
 
@@ -68,13 +85,20 @@ class UDPManager {
     receiver = await UDP.bind(Endpoint.unicast(InternetAddress.anyIPv4, port: Port(_portInput)));
     // receiving\listening
     var success=receiver.listen((Datagram datagram) {
-     // print(PGN.fromBytes(datagram.data).toBytes());
+      PGN pgn = PGN.fromBytes(datagram.data);
+      if(pgn.pgnId==214 && pgn.isValid()){
+        parseLocationPGN(pgn);
+      }
     },timeout: Duration(days: 1));
     print("UDP LISTEN");
     send([71,74]);
 
     // close
     }
+  }
+
+  void listen(Function (double lat,double lng, double spd, double hdg) callback ){
+    update=callback;
   }
 
   void send(List<int> packet)async {
@@ -88,7 +112,6 @@ class UDPManager {
     sender.close();
   }
   void close(){
-
     receiver.close();
   }
 }

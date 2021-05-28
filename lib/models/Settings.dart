@@ -9,7 +9,7 @@ class VragoSettings {
   int DestiantionPort=9988;
   int InputPort=8888;
   List<int> Sections=[250,250,250,250];
-  int Offset=1000;
+  int Offset=500;
 
   Map<String, dynamic> toJson() => {
     'lp': this.lp.toJson(),
