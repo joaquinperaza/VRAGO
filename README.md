@@ -1,6 +1,6 @@
 # vrago
 
-Variable Rate for Ag Open, project coded in Flutter, supporting Android, iOS, and also windows soon!
+Variable Rate for Ag Open, project coded in Flutter, __supporting Android and iOS__, also windows soon!
 
 ## Getting Started
 
@@ -27,16 +27,19 @@ byte5= Length
 byte6= Section # (int)
 byte7= rateHIGH
 byte8= rateLOW
-byte9= CRC (AOG-CRC, see calculation in lib/api/UDPManager.dart)
+byte9= CRC 
 ```
 
-The rate bytes define a 2 byte unsigned int that correspond to 10,000X the units to apply in 1 meter of displacement of the section.
+The rate bytes define a 2 byte unsigned int that correspond to 10,000X the units to apply in 1 meter of displacement of the section. To convert to double just get the int from the 2 bytes and divide by 10,000.
+
+CRC is an addition of all values and truncated to lower 8 bits, getting a 0-255 value (see calculation in lib/api/UDPManager.dart).
 
 ## TO-DO
-- AOG as location provider (Over UDP PGN) 
+- ~~AOG as location provider (Over UDP PGN)~~ (AOG location now supported, but still not reading section from AOG 😔)
 - Read sections from AOG automatically (Over UDP PGN) 
 - TCP/UDP Location provider with NMEA parser
 - ESP32 Demo code
+- Flow/time mode, send PGN using speed from location provider, calculating the target flow/time
 - Windows support using AOG or TCP/UDP locations provider
 
 ## Screenshots
